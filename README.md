@@ -64,6 +64,41 @@ cd agent-team && git pull origin main && cd ..
 git add agent-team && git commit -m "bump agent-team"
 ```
 
+## Correr un job con otra cuenta de Claude
+
+`agent-team` no tiene noción de credenciales por job: cada llamada a `claude`
+hereda el login OAuth de la máquina donde corre `job` (`~/.claude/.credentials.json`),
+sin importar el rol (`agentteam/backends.py`). Eso descarta dos atajos:
+
+- **`ANTHROPIC_API_KEY` por comando** solo sirve si la otra cuenta tiene una
+  API key de [console.anthropic.com](https://console.anthropic.com) — una
+  suscripción Pro/Max de claude.ai no emite una.
+- **`claude logout` / `claude login` en esta misma máquina** cambia la cuenta
+  para toda la máquina, no solo para este job — afecta cualquier otra sesión
+  de Claude Code corriendo ahí.
+
+Para una suscripción Pro/Max sin tocar la sesión actual, la forma limpia es
+un **segundo Codespace** sobre este mismo repo, logueado con la otra cuenta:
+
+1. En GitHub, sobre este repo: botón **Code** → pestaña **Codespaces** →
+   **Create codespace on main**.
+2. Ahí adentro, loguear la otra cuenta:
+   ```sh
+   claude login
+   ```
+3. Instalar `agent-team` en ese Codespace (el submódulo ya viene clonado):
+   ```sh
+   cd agent-team && git submodule update --init --recursive 2>/dev/null; ./install.sh && cd ..
+   ```
+4. Lanzar el job ahí:
+   ```sh
+   job new derive "$(cat OBJECTIVE.md)" --pi --run
+   ```
+
+Ambos Codespaces apuntan al mismo remoto, así que una vez que ese job
+comitee y pushee su resultado, alcanza con un `git pull` normal desde
+cualquier otro Codespace/clon para traerlo.
+
 ## Qué NO incluye esta plantilla a propósito
 
 Cosas específicas de un proyecto (script de setup del entorno, el paper
