@@ -1,0 +1,15 @@
+# Job data is created per-project by the `job` tool; never commit it here.
+jobs/
+
+# Python / OS cruft
+__pycache__/
+*.pyc
+.DS_Store
+
+# Local environment logs (e.g. from a project's own setup.sh)
+setup.log
+*.log
+
+# Local, uncommitted policy overrides for agent-team
+policy.json
+!jobs/.gitkeep
