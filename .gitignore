@@ -1,5 +1,6 @@
 # Job data is created per-project by the `job` tool; never commit it here.
-jobs/
+jobs/*
+!jobs/.gitkeep
 
 # Python / OS cruft
 __pycache__/
@@ -12,4 +13,3 @@ setup.log
 
 # Local, uncommitted policy overrides for agent-team
 policy.json
-!jobs/.gitkeep
